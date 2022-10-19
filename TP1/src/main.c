@@ -58,14 +58,14 @@ int main(int argc, char* argv[])
     // scatter input values 
     MPI_Scatter(file_buffer, N, MPI_INT, buffer, N, MPI_INT, MASTER, MPI_COMM_WORLD);
 
-    // compute process buffered values and time spent
+    // compute process buffered values and get time begin/end
     time_p->begin = clock();
-    compute_array(buffer, N, rank);
+        compute_array(buffer, N, rank);
     time_p->end = clock();
 
     // gather output values
     MPI_Gather(buffer, N, MPI_INT, file_buffer, N, MPI_INT, MASTER, MPI_COMM_WORLD);
-
+    
     if (rank == MASTER){
         // end cpu time and calc diff
         time_cpu->end  = clock();
@@ -77,13 +77,20 @@ int main(int argc, char* argv[])
         // write output values to file
         write_file(file_buffer, file_size);
     }
-
-    // waits until all process gets here
-    MPI_Barrier(MPI_COMM_WORLD);
-
-    // calc process time spent and writes into file
+    
+    // calc process time spent and send to MASTER
     diff = (double)(time_p->end - time_p->begin);
-    write_p_time(diff / CLOCKS_PER_SEC, rank);
+    MPI_Send(&diff, 1, MPI_DOUBLE, MASTER, 0, MPI_COMM_WORLD);
 
+    if (rank == MASTER){
+        double recv;    // receive data
+        
+        // receive process time spent and writes to file
+        for (int i = 0; i < mpi_size; i++){
+            MPI_Recv(&recv, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            write_p_time(recv / CLOCKS_PER_SEC, i);
+        }
+    }
+    
     MPI_Finalize();
 }

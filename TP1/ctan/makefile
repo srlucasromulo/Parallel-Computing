@@ -64,7 +64,8 @@ clean:
 	@ echo 'Cleanning up...'
 	@ rm -rf ./obj/* ./obj
 	@ rm -rf ./bin/* ./bin
+	@ rm output time
 	@ echo 'ok'
 
 run: all
-	@ mpirun -n 8 --machinefile machinefile $(BIN)
+	@ mpirun -n 30 --machinefile machinefile $(BIN)
