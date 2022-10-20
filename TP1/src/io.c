@@ -1,7 +1,7 @@
 #include "io.h"
 
 
-int get_input_size(){
+int get_input_size(){   // wc -l < input
 
 	FILE* fp = popen("wc -l < ./input", "r");
 
@@ -13,7 +13,7 @@ int get_input_size(){
 	return size;
 }
 
-void read_file(int* values, int size){
+void read_file(int* values, int size){  // input
 
 	FILE* fp = fopen("./input", "r");
 
@@ -23,7 +23,7 @@ void read_file(int* values, int size){
 	fclose(fp);
 }
 
-void write_file(int* values, int size){
+void write_file(int* values, int size){ // output
 
 	FILE* fp = fopen("./output", "w");
 
@@ -33,6 +33,7 @@ void write_file(int* values, int size){
 	fclose(fp);
 }
 
+// writes total time
 void write_cpu_time(float cpu){
 
 	FILE* fp = fopen("./time", "w");
@@ -42,6 +43,7 @@ void write_cpu_time(float cpu){
 	fclose(fp);
 }
 
+// writes process time
 void write_p_time(float time, int rank){
 
 	FILE* fp = fopen("./time", "a");
