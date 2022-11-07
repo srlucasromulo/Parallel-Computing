@@ -34,7 +34,7 @@ void load_ecosystem_specs(
 	int p = 0;
 
 	for (int i = 0; i < 7; i++){
-		char string[5] = "\0";
+		char string[3] = "\0";
 		while((c = input_buffer[p], c != ' ' && c != '\n')){
 			strcat(string, &c);
 			p++;
