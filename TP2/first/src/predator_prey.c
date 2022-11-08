@@ -1,37 +1,68 @@
-#include "io.h"
 #include "predator_prey.h"
-
-int main (int argc, char **argv){
-
-	// get input file size (in chars)
-	int input_size;
-	get_input_size(&input_size);
-
-	// load input file to buffer
-	char input_buffer[input_size];
-	load_input(&input_buffer, input_size);
-
-	int GEN_PROC_PREY;
-	int GEN_PROC_PREDATOR;
-	int GEN_PREDATOR_FOOD;
-	int N_GEN, R, C, N;
-
-	load_ecosystem_specs(
-		input_buffer,
-		&GEN_PROC_PREY,
-		&GEN_PROC_PREDATOR,
-		&GEN_PREDATOR_FOOD,
-		&N_GEN, 
-		&R, &C, &N
-	);
-
-	board_postion_t board[R][C];
-	predator_t predators[R*C];
-	prey_t preys[R*C];
+#include <stdio.h>
 
 
-	printf("%d %d %d %d %d %d %d\n", GEN_PROC_PREY, GEN_PROC_PREDATOR, GEN_PREDATOR_FOOD, N_GEN, R, C, N);
+void empty_board(int *board, int R, int C){
 
+	for (int i = 0; i < R * C; i++)
+		board[i] = EMPTY_FIELD;
+}
 
-	// printf("%s\n", input_buffer);
+void print_board(int *board, int R, int C){
+	// colocar os subjects como parametro
+	// para printar melhor
+
+	printf("\nCURRENT BOARD:");
+	for (int i = 0; i < R * C; i++){		
+		if (i % C == 0) printf("\n");
+		printf("%d\t", board[i]);
+	}
+	printf("\n");
+}
+
+void empty_subjects_list(subject_t *list, int R, int C){
+
+	for (int i = 0; i < R * C; i++)
+		list[i].type = '-';
+}
+
+void print_subjects_list(subject_t *list, int R, int C){
+
+	for (int i = 0; i < R * C; i++){
+		if (list[i].type == NONE)
+			printf("-\n");
+		if (list[i].type == PREY)
+			printf("- %c, %d\n", list[i].type, list[i].prey.gen_proc);
+		if (list[i].type == PREDATOR)
+			printf("- %c, %d, %d\n", list[i].type, list[i].predator.gen_proc, list[i].predator.gen_food);
+	}
+}
+
+int add_subject_to_list(
+	subject_t *list, char type,
+	int GEN_PROC_PREY,
+	int GEN_PROC_PREDATOR,
+	int GEN_PREDATOR_FOOD
+){
+	int p = 0;
+
+	while (list[p].type != NONE) p++;
+
+	list[p].type = type;
+
+	if (type == PREDATOR) {
+		list[p].predator.gen_proc = GEN_PROC_PREDATOR;
+		list[p].predator.gen_food = GEN_PREDATOR_FOOD;
+	}
+	else
+		list[p].prey.gen_proc = GEN_PROC_PREY;
+
+	return p;
+}
+
+void add_object_to_board(
+	int *board, int R, int C,
+	int id, int x, int y
+){
+	board[x*C+y] = id; 
 }
