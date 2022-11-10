@@ -41,7 +41,9 @@ typedef struct subject_t {
 /* _____BOARD_____ */
 void empty_board(int *board, int R, int C);
 void print_board(int *board, int R, int C);
+void printf_board(int *board, subject_t *list, int g, int R, int C);
 void copy_board(int *dest, int *src, int size);
+void copy_stone_board(int *dest, int *src, int size);
 void add_object_to_board(
 	int *board, int R, int C,
 	int id, int x, int y
@@ -56,13 +58,21 @@ int add_subject_to_list(
 	int GEN_PROC_PREDATOR,
 	int GEN_PREDATOR_FOOD
 );
+int new_prey(subject_t *list, int R, int C, int GEN_PROC);
+int new_predator(subject_t *list, int R, int C, int GEN_PROC, int GEN_FOOD);
 
 /* _____MOVEMENT_____ */
 void move_subjects(
 	int *current_board,
 	int *next_board, 
 	subject_t *subjects,
-	int g, int R, int C
+	int g, int R, int C, int *N,
+	int GEN_PREDATOR, int GEN_PREY, int GEN_FOOD 
+);
+void decrease_gen(
+	int *board, 
+	subject_t *subjects, 
+	int R, int C, int *N
 );
 
 #endif

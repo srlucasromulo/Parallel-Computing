@@ -36,27 +36,27 @@ CCFLAGS = $(CFLAGS)
 all: objFolder binFolder $(BIN)
 
 $(BIN): $(OBJ)
-	@ echo 'Building binary $@ using $(CC)...'
+# 	@ echo 'Building binary $@ using $(CC)...'
 	@ $(CC) $(OBJ) -o $@ $(CCFLAGS)
-	@ echo 'Finished building $@.'
+# 	@ echo 'Finished building $@.'
 
 ./obj/%.o: ./src/%.c ./src/*.h
-	@ echo 'Building $@ from $<...'
+# 	@ echo 'Building $@ from $<...'
 	@ $(CC)  -c $< -o $@ $(CCFLAGS)
-	@ echo 'ok'
+# 	@ echo 'ok'
 
 objFolder:
 	@ if [ ! -d ./obj ]; then \
-		echo 'Creating objects folder...' ; \
+# 		echo 'Creating objects folder...' ; \
 		mkdir -p obj ; \
-		echo 'ok'; \
+# 		echo 'ok'; \
 	fi
 
 binFolder:
 	@ if [ ! -d ./bin ]; then \
-		echo 'Creating binary folder...' ; \
+# 		echo 'Creating binary folder...' ; \
 		mkdir -p bin ; \
-		echo 'ok'; \
+# 		echo 'ok'; \
 	fi
 
 .PHONY: clean run
