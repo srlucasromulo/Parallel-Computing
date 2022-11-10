@@ -1,7 +1,7 @@
 #ifndef __IO__
 #define __IO__
 
-#include <stdio.h>
+
 #include "predator_prey.h"
 
 

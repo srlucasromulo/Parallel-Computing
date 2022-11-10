@@ -2,14 +2,19 @@
 #define __PREDATOR_PREY__
 
 
-#define PREDATOR 'X'	// types for subject list
-#define PREY 'O'
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+
+#define PREDATOR 'R'	// types for subject list
+#define PREY 'C'
 #define NONE '-'
 
 #define EMPTY_FIELD -1
 #define STONE_FIELD -2
 
-enum spec_t {
+enum specs_enum {
 	GEN_PROC_PREY, GEN_PROC_PREDATOR, GEN_PREDATOR_FOOD,
 	N_GEN, R, C, N = 6
 };
@@ -33,11 +38,18 @@ typedef struct subject_t {
 } subject_t;
 
 
+/* _____BOARD_____ */
 void empty_board(int *board, int R, int C);
 void print_board(int *board, int R, int C);
+void copy_board(int *dest, int *src, int size);
+void add_object_to_board(
+	int *board, int R, int C,
+	int id, int x, int y
+);
+
+/* _____LIST_____ */
 void empty_subjects_list(subject_t *list, int R, int C);
 void print_subjects_list(subject_t *list, int R, int C);
-
 int add_subject_to_list(
 	subject_t *list, char type,
 	int GEN_PROC_PREY,
@@ -45,10 +57,12 @@ int add_subject_to_list(
 	int GEN_PREDATOR_FOOD
 );
 
-void add_object_to_board(
-	int *board, int R, int C,
-	int id, int x, int y
+/* _____MOVEMENT_____ */
+void move_subjects(
+	int *current_board,
+	int *next_board, 
+	subject_t *subjects,
+	int g, int R, int C
 );
-
 
 #endif

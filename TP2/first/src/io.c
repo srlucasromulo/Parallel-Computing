@@ -1,8 +1,5 @@
 #include "io.h"
 #include "predator_prey.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 
 
 void get_input_size(int *input_size){
@@ -94,7 +91,5 @@ void load_ecosystem_disposition(
 		}
 
 		add_object_to_board(board, specs[R], specs[C], id, x, y);
-
-		printf("label %d: %s, %d, %d\n", i, string_label, x, y);
 	}
 }
