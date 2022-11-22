@@ -102,6 +102,7 @@ void move_preys(
 	int g, int R, int C, int *N,
 	int GEN_PREY
 ){
+	clock_t time = clock();
 
 	for (int x = 0; x < R; x++) {
 		for (int y = 0; y < C; y++) {
@@ -153,6 +154,9 @@ void move_preys(
 				subjects[id].prey.gen_proc--;
 		}
 	}
+
+	time = clock() - time;
+	printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
 }
 
 /* _____PREDATORS_____ */
@@ -201,6 +205,7 @@ void move_predators(
 	int g, int R, int C, int *N,
 	int GEN_PREDATOR, int GEN_FOOD
 ){
+	clock_t time = clock();
 
 	for (int x = 0; x < R; x++) {
 		for (int y = 0; y < C; y++) {
@@ -269,4 +274,6 @@ void move_predators(
 			}
 		}
 	}
+	time = clock() - time;
+	printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
 }

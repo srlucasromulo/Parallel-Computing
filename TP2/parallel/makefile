@@ -26,7 +26,7 @@ MPI_CC = mpicc
 CC = $(C_CC)
 
 # Compiler flags
-CFLAGS = -lm -Wall
+CFLAGS = -lm -Wall -pg -fopenmp
 CCFLAGS = $(CFLAGS)
 
 
@@ -36,35 +36,29 @@ CCFLAGS = $(CFLAGS)
 all: objFolder binFolder $(BIN)
 
 $(BIN): $(OBJ)
-# 	@ echo 'Building binary $@ using $(CC)...'
 	@ $(CC) $(OBJ) -o $@ $(CCFLAGS)
-# 	@ echo 'Finished building $@.'
 
 ./obj/%.o: ./src/%.c ./src/*.h
-# 	@ echo 'Building $@ from $<...'
 	@ $(CC)  -c $< -o $@ $(CCFLAGS)
-# 	@ echo 'ok'
 
 objFolder:
-	@ if [ ! -d ./obj ]; then \
-# 		echo 'Creating objects folder...' ; \
-		mkdir -p obj ; \
-# 		echo 'ok'; \
-	fi
+	mkdir -p obj
 
 binFolder:
-	@ if [ ! -d ./bin ]; then \
-# 		echo 'Creating binary folder...' ; \
-		mkdir -p bin ; \
-# 		echo 'ok'; \
-	fi
+	mkdir -p bin
 
-.PHONY: clean run
+.PHONY: clean run gprof profile
 clean:
-	@ echo 'Cleanning up...'
 	@ rm -rf ./obj/* ./obj
 	@ rm -rf ./bin/* ./bin
-	@ echo 'ok'
+	@ rm -f profile output gmon.out
+	@ rm -f ./time/time*
 
 run: all
-	@ $(BIN)
+	@ $(BIN) > ./time/time_elapsed
+
+gprof: run
+	@ gprof -b $(BIN) gmon.out > profile
+
+profile: run
+	@ cd time && python script.py

@@ -4,9 +4,13 @@
 
 /* _____BOARD_____ */
 void empty_board(int *board, int R, int C){
+	clock_t time = clock();
 
 	for (int i = 0; i < R * C; i++)
 		board[i] = EMPTY_FIELD;
+
+	time = clock() - time;
+	printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
 }
 
 void print_board(int *board, int R, int C){
@@ -40,18 +44,13 @@ void printf_board(int *board, subject_t *list, int g, int R, int C){
 }
 
 void copy_board(int *dest, int *src, int size){
+	clock_t time = clock();
 
 	for (int i = 0; i < size; i++)
 		dest[i] = src[i];
-}
 
-void copy_stone_board(int *dest, int *src, int size){
-
-	for (int i = 0; i < size; i++)
-		if (src[i] == STONE_FIELD)
-			dest[i] = src[i];
-		else
-			dest[i] = EMPTY_FIELD;
+	time = clock() - time;
+	printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
 }
 
 void add_object_to_board(
@@ -64,9 +63,13 @@ void add_object_to_board(
 
 /* _____LIST_____ */
 void empty_subjects_list(subject_t *list, int R, int C){
+	clock_t time = clock();
 
 	for (int i = 0; i < R * C; i++)
 		list[i].type = '-';
+
+	time = clock() - time;
+	printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
 }
 
 void print_subjects_list(subject_t *list, int R, int C){
@@ -81,15 +84,15 @@ void print_subjects_list(subject_t *list, int R, int C){
 	}
 }
 
+int new_subject_position(subject_t *list);
 int add_subject_to_list(
 	subject_t *list, char type,
 	int GEN_PROC_PREY,
 	int GEN_PROC_PREDATOR,
 	int GEN_PREDATOR_FOOD
 ){
-	int p = 0;
 
-	while (list[p].type != NONE) p++;
+	int p = new_subject_position(list);
 
 	list[p].type = type;
 
@@ -103,17 +106,22 @@ int add_subject_to_list(
 	return p;
 }
 
-int new_subject_position(subject_t *list, int R, int C){
+int new_subject_position(subject_t *list){
+	clock_t time = clock();
 
-	int id = 0;
-	while (list[id].type != NONE) id++;
+	int id;
+	for (id = 0; list[id].type != NONE; id++);
+
+	time = clock() - time;
+	printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
+	
 	return id;
 }
 
 
 int new_prey(subject_t *list, int R, int C, int GEN_PROC) {
 	
-	int id = new_subject_position(list, R, C);
+	int id = new_subject_position(list);
 	list[id].type = PREY;
 	list[id].prey.gen_proc = GEN_PROC;
 	return id;
@@ -121,7 +129,7 @@ int new_prey(subject_t *list, int R, int C, int GEN_PROC) {
 
 int new_predator(subject_t *list, int R, int C, int GEN_PROC, int GEN_FOOD){
 
-	int id = new_subject_position(list, R, C);
+	int id = new_subject_position(list);
 	list[id].type = PREDATOR;
 	list[id].predator.gen_proc = GEN_PROC;
 	list[id].predator.gen_food = GEN_FOOD;
