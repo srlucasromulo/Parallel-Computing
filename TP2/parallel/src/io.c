@@ -1,5 +1,7 @@
 #include "io.h"
 #include "predator_prey.h"
+#include <stdio.h>
+#include <string.h>
 
 
 void get_input_size(int *input_size){
@@ -92,4 +94,41 @@ void load_ecosystem_disposition(
 
 		add_object_to_board(board, specs[R], specs[C], id, x, y);
 	}
+}
+
+void save_output(
+	int *current_board, 
+	subject_t *subjects,
+	int *specs
+){
+
+	char buffer[1024] = "\0";
+
+	for (int i = 0; i < 7; i++){
+		char value[5];
+		sprintf(value, "%d ", specs[i]);
+		strcat(buffer, value);
+	}
+	strcat(buffer, "\n");
+
+	for (int i = 0; i < specs[R]; i++){
+		for (int j = 0; j < specs[C]; j++){
+			int id = current_board[i*C+j];
+			if (id != EMPTY_FIELD){
+				if (current_board[i*C+j] == STONE_FIELD)
+					strcat(buffer, "ROCHA ");
+				if (subjects[id].type == PREY)
+					strcat(buffer, "COELHO ");
+				if (subjects[id].type == PREDATOR)
+					strcat(buffer, "RAPOSA ");
+				char position[11] = "\0";
+				sprintf(position, "%d %d\n", i, j);
+				strcat(buffer, position);
+			}
+		}
+	}
+
+	FILE *fileptr = fopen("output", "w");
+	fwrite(buffer, sizeof(char), sizeof(buffer), fileptr);
+	fclose(fileptr);
 }

@@ -32,44 +32,34 @@ int main (int argc, char **argv){
 		(subject_t*)&subjects
 	);
 
-	printf_board(
-		(int*)current_board,
-		(subject_t*)subjects,
-		 0, specs[R], specs[C]
-	);
-
 	for (int g = 0; g < specs[N_GEN]; g++){
 
 		// copy current board to a new one
 		int next_board[specs[R] * specs[C]];
-		copy_stone_board(
-			(int*)&next_board, 
-			(int*)current_board, 
-			specs[R]*specs[C]
-		);
+		copy_board((int*)&next_board, (int*)current_board, specs[R]*specs[C]);
 
-		move_subjects(
-			(int*)current_board,
+		move_preys(
+			(int*)current_board, 
 			(int*)&next_board, 
 			(subject_t*)&subjects,
 			g, specs[R], specs[C], &specs[N],
-			specs[GEN_PROC_PREDATOR], specs[GEN_PROC_PREY], specs[GEN_PREDATOR_FOOD]
+			specs[GEN_PROC_PREY]
 		);
 
 		// modified board is now the current board
 		copy_board((int*)&current_board, (int*)next_board, specs[R]*specs[C]);
 
-		printf_board(
-			(int*)current_board,
-			(subject_t*)subjects,
-		 g+1, specs[R], specs[C]
+		move_predators(
+			(int*)current_board, 
+			(int*)&next_board, 
+			(subject_t*)&subjects,
+			g, specs[R], specs[C], &specs[N],
+			specs[GEN_PROC_PREDATOR], specs[GEN_PREDATOR_FOOD]
 		);
+
+		// modified board is now the current board
+		copy_board((int*)&current_board, (int*)next_board, specs[R]*specs[C]);
 	}
 
-	// printf("%d %d %d %d %d %d %d\n", 
-	// 	specs[GEN_PROC_PREY], 
-	// 	specs[GEN_PROC_PREDATOR],
-	//  	specs[GEN_PREDATOR_FOOD], 
-	//  	specs[N_GEN], 
-	//  	specs[R], specs[C], specs[N]);
+	save_output((int*)current_board, subjects, specs);
 }

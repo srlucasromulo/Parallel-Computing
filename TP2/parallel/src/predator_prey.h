@@ -43,7 +43,6 @@ void empty_board(int *board, int R, int C);
 void print_board(int *board, int R, int C);
 void printf_board(int *board, subject_t *list, int g, int R, int C);
 void copy_board(int *dest, int *src, int size);
-void copy_stone_board(int *dest, int *src, int size);
 void add_object_to_board(
 	int *board, int R, int C,
 	int id, int x, int y
@@ -62,17 +61,20 @@ int new_prey(subject_t *list, int R, int C, int GEN_PROC);
 int new_predator(subject_t *list, int R, int C, int GEN_PROC, int GEN_FOOD);
 
 /* _____MOVEMENT_____ */
-void move_subjects(
+void move_preys(
 	int *current_board,
 	int *next_board, 
 	subject_t *subjects,
 	int g, int R, int C, int *N,
-	int GEN_PREDATOR, int GEN_PREY, int GEN_FOOD 
+	int GEN_PREY
 );
-void decrease_gen(
-	int *board, 
-	subject_t *subjects, 
-	int R, int C, int *N
+void move_predators(
+	int *current_board,
+	int *next_board, 
+	subject_t *subjects,
+	int g, int R, int C, int *N,
+	int GEN_PREDATOR, int GEN_FOOD
 );
+
 
 #endif
