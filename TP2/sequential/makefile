@@ -55,7 +55,8 @@ clean:
 	@ rm -f ./time/time*
 
 run: all
-	@ $(BIN) > ./time/time_elapsed
+	@ $(BIN)
+# 	@ $(BIN) > ./time/time_elapsed
 
 gprof: run
 	@ gprof -b $(BIN) gmon.out > profile

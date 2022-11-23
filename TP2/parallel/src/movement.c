@@ -104,6 +104,7 @@ void move_preys(
 ){
 	clock_t time = clock();
 
+	#pragma omp parallel for collapse(2)
 	for (int x = 0; x < R; x++) {
 		for (int y = 0; y < C; y++) {
 
@@ -111,42 +112,45 @@ void move_preys(
 			int id = current_board[x_y];
 			
 			if (subjects[id].type == PREY && subjects[id].prey.gen_proc <= GEN_PREY){
-				int next_pos = prey_next_position(
-					current_board, 
-					next_board, 
-					subjects,
-					id, g, x, y, R, C
-				);
+				# pragma omp critical 
+				{
+					int next_pos = prey_next_position(
+						current_board, 
+						next_board, 
+						subjects,
+						id, g, x, y, R, C
+					);
 
-				// check for conflict
-				int alive = id;
-				if (next_board[next_pos] >= 0){
-					alive = solve_conflict(subjects, id, next_board[next_pos]);
-					(*N)--;
-				}
-
-				if (alive == id){
-					// move prey
-					if (next_pos != x_y){
-						next_board[next_pos] = id;
-						next_board[x_y] = EMPTY_FIELD;
+					// check for conflict
+					int alive = id;
+					if (next_board[next_pos] >= 0){
+						alive = solve_conflict(subjects, id, next_board[next_pos]);
+						(*N)--;
 					}
 
-					// reduce proc_gen and try to procreate
-					subjects[id].prey.gen_proc--;
-					int new_id = -1;
-					if (subjects[id].prey.gen_proc < 0) {
-						subjects[id].prey.gen_proc = GEN_PREY;
-						if (x_y < next_pos)
-							new_id = new_prey(subjects, R, C, GEN_PREY+1);
-						else
-							new_id = new_prey(subjects, R, C, GEN_PREY);
-					}					
-					// if procreation: add new prey to board and reset proc_count
-					if (new_id != -1){
-						next_board[x_y] = new_id;
-						(*N)++;
-						subjects[id].prey.gen_proc = GEN_PREY;
+					if (alive == id){
+						// move prey
+						if (next_pos != x_y){
+							next_board[next_pos] = id;
+							next_board[x_y] = EMPTY_FIELD;
+						}
+
+						// reduce proc_gen and try to procreate
+						subjects[id].prey.gen_proc--;
+						int new_id = -1;
+						if (subjects[id].prey.gen_proc < 0) {
+							subjects[id].prey.gen_proc = GEN_PREY;
+							if (x_y < next_pos)
+								new_id = new_prey(subjects, R, C, GEN_PREY+1);
+							else
+								new_id = new_prey(subjects, R, C, GEN_PREY);
+						}					
+						// if procreation: add new prey to board and reset proc_count
+						if (new_id != -1){
+							next_board[x_y] = new_id;
+							(*N)++;
+							subjects[id].prey.gen_proc = GEN_PREY;
+						}
 					}
 				}
 			}

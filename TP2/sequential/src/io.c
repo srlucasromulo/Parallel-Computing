@@ -51,7 +51,6 @@ void load_ecosystem_specs(char* input_buffer, int *specs){
 void load_ecosystem_disposition(
 	char *input_buffer,
 	int* specs,
-	int *board,
 	subject_t *subjects
 ){
 	char c;
@@ -75,24 +74,15 @@ void load_ecosystem_disposition(
 		get_next_word(input_buffer, &p, string_position);
 		y = atoi(string_position);
 
-		int id = EMPTY_FIELD;
-		if (!strcmp(string_label, "ROCHA"))
-			id = STONE_FIELD;
+		subject_t new;
+		if (!strcmp(string_label, OBSTACLE_ALIAS))
+			new = new_obstacle(x, y);
+		if (!strcmp(string_label, PREY_ALIAS))
+			new = new_prey(x, y, specs[GEN_PROC_PREY]);
+		if (!strcmp(string_label, PREDATOR_ALIAS))
+			new = new_predator(x, y, specs[GEN_PROC_PREDATOR], specs[GEN_PREDATOR_FOOD]);	
 
-		if (!strcmp(string_label, "COELHO") || !strcmp(string_label, "RAPOSA")){
-
-			char type = 
-				!strcmp(string_label, "COELHO") ? PREY : PREDATOR;
-
-			id = add_subject_to_list(
-				subjects, type, 
-				specs[GEN_PROC_PREY], 
-				specs[GEN_PROC_PREDATOR], 
-				specs[GEN_PREDATOR_FOOD]
-			);
-		}
-
-		add_object_to_board(board, specs[R], specs[C], id, x, y);
+		add_subject_to_list(subjects, new);
 	}
 }
 
@@ -114,8 +104,8 @@ void save_output(
 	for (int i = 0; i < specs[R]; i++){
 		for (int j = 0; j < specs[C]; j++){
 			int id = current_board[i*C+j];
-			if (id != EMPTY_FIELD){
-				if (current_board[i*C+j] == STONE_FIELD)
+			if (id != -1){
+				if (current_board[i*C+j] == -2)
 					strcat(buffer, "ROCHA ");
 				if (subjects[id].type == PREY)
 					strcat(buffer, "COELHO ");

@@ -42,10 +42,10 @@ $(BIN): $(OBJ)
 	@ $(CC)  -c $< -o $@ $(CCFLAGS)
 
 objFolder:
-	mkdir -p obj
+	@ mkdir -p obj
 
 binFolder:
-	mkdir -p bin
+	@ mkdir -p bin
 
 .PHONY: clean run gprof profile
 clean:
@@ -54,8 +54,9 @@ clean:
 	@ rm -f profile output gmon.out
 	@ rm -f ./time/time*
 
+NUM_THREADS=4
 run: all
-	@ $(BIN) > ./time/time_elapsed
+	@ export OMP_NUM_THREADS=$(NUM_THREADS); $(BIN) > ./time/time_elapsed
 
 gprof: run
 	@ gprof -b $(BIN) gmon.out > profile

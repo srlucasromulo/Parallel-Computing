@@ -10,10 +10,13 @@
 
 #define PREDATOR 'R'	// types for subject list
 #define PREY 'C'
+#define OBSTACLE '*'
 #define NONE '-'
 
-#define EMPTY_FIELD -1
-#define STONE_FIELD -2
+#define PREDATOR_ALIAS "RAPOSA"
+#define PREY_ALIAS "COELHO"
+#define OBSTACLE_ALIAS "ROCHA"
+
 
 enum specs_enum {
 	GEN_PROC_PREY, GEN_PROC_PREDATOR, GEN_PREDATOR_FOOD,
@@ -32,6 +35,7 @@ typedef struct prey_t {
 
 typedef struct subject_t {
 	char type;
+	int x, y;
 	union {
 		predator_t predator;
 		prey_t prey;
@@ -39,42 +43,31 @@ typedef struct subject_t {
 } subject_t;
 
 
-/* _____BOARD_____ */
-void empty_board(int *board, int R, int C);
-void print_board(int *board, int R, int C);
-void printf_board(int *board, subject_t *list, int g, int R, int C);
-void copy_board(int *dest, int *src, int size);
-void add_object_to_board(
-	int *board, int R, int C,
-	int id, int x, int y
-);
-
 /* _____LIST_____ */
-void empty_subjects_list(subject_t *list, int R, int C);
-void print_subjects_list(subject_t *list, int R, int C);
-int add_subject_to_list(
-	subject_t *list, char type,
-	int GEN_PROC_PREY,
-	int GEN_PROC_PREDATOR,
-	int GEN_PREDATOR_FOOD
-);
-int new_prey(subject_t *list, int R, int C, int GEN_PROC);
-int new_predator(subject_t *list, int R, int C, int GEN_PROC, int GEN_FOOD);
+void empty_subjects_list(subject_t *list, int size);
+void print_subjects_list(const subject_t *list, int N);
+void copy_subjects_list(subject_t *dest, const subject_t *src, int N);
+void add_subject_to_list(subject_t *list, subject_t item);
+subject_t new_obstacle(int x, int y);
+subject_t new_prey(int x, int y, int GEN_PROC);
+subject_t new_predator(int x, int y, int GEN_PROC, int GEN_FOOD);
+char subject_in_position(const subject_t *list, int N, int x, int y);
 
 /* _____MOVEMENT_____ */
 void move_preys(
-	int *current_board,
-	int *next_board, 
-	subject_t *subjects,
+	const subject_t *subjects, subject_t *next_subjects,
 	int g, int R, int C, int *N,
 	int GEN_PREY
 );
 void move_predators(
-	int *current_board,
-	int *next_board, 
-	subject_t *subjects,
+	const subject_t *subjects, subject_t *next_subjects,
 	int g, int R, int C, int *N,
 	int GEN_PREDATOR, int GEN_FOOD
+);
+void solve_conflicts(
+	const subject_t *subjects,
+	subject_t *next_subjects,
+	int *N
 );
 
 

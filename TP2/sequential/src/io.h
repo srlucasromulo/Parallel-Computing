@@ -11,7 +11,6 @@ void load_ecosystem_specs(char *input_buffer, int *specs);
 void load_ecosystem_disposition(
 	char *input_buffer,
 	int *specs,
-	int *current_board,
 	subject_t *subjects
 );
 void save_output(

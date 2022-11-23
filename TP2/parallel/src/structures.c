@@ -7,10 +7,8 @@ void empty_board(int *board, int R, int C){
 	clock_t time = clock();
 
 	#pragma omp parallel for
-	for (int i = 0; i < R * C; i++){
-		printf("thread %d\n", omp_get_thread_num());
+	for (int i = 0; i < R * C; i++)
 		board[i] = EMPTY_FIELD;
-	}
 
 	time = clock() - time;
 	printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
@@ -49,6 +47,7 @@ void printf_board(int *board, subject_t *list, int g, int R, int C){
 void copy_board(int *dest, int *src, int size){
 	clock_t time = clock();
 
+	#pragma omp parallel for
 	for (int i = 0; i < size; i++)
 		dest[i] = src[i];
 
@@ -68,6 +67,7 @@ void add_object_to_board(
 void empty_subjects_list(subject_t *list, int R, int C){
 	clock_t time = clock();
 
+	#pragma omp parallel for
 	for (int i = 0; i < R * C; i++)
 		list[i].type = '-';
 
