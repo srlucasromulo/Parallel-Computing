@@ -1,5 +1,6 @@
 #include "io.h"
 #include "predator_prey.h"
+#include <stdio.h>
 
 
 int main (int argc, char **argv){
@@ -27,13 +28,11 @@ int main (int argc, char **argv){
 		(subject_t*)&subjects
 	);
 
-	print_subjects_list(subjects, specs[N]);
-
 	for (int g = 0; g < specs[N_GEN]; g++){
 
 		// copy current subjects list to a new one
 		subject_t next_subjects[specs[R]*specs[C]];
-		copy_subjects_list((subject_t*)&next_subjects, subjects, specs[R]*specs[C]);
+		copy_subjects_list((subject_t*)&next_subjects, subjects, specs[N]);
 
 		move_preys(
 			subjects, (subject_t*)&next_subjects,
@@ -41,7 +40,7 @@ int main (int argc, char **argv){
 			specs[GEN_PROC_PREY]
 		);
 
-		copy_subjects_list((subject_t*)&subjects, next_subjects, specs[R]*specs[C]);
+		copy_subjects_list((subject_t*)&subjects, next_subjects, specs[N]);
 
 		move_predators(
 			subjects, (subject_t*)&next_subjects,
@@ -49,9 +48,9 @@ int main (int argc, char **argv){
 			specs[GEN_PROC_PREY], specs[GEN_PREDATOR_FOOD]
 		);
 
-		copy_subjects_list((subject_t*)&subjects, next_subjects, specs[R]*specs[C]);
+		copy_subjects_list((subject_t*)&subjects, next_subjects, specs[N]);
 
-		solve_conflicts(subjects, (subject_t*)&next_subjects, &specs[N]);
+		solve_conflicts((subject_t*)&subjects, &specs[N]);
 
 		// DBG - print board
 		char board[specs[R]][specs[C]];

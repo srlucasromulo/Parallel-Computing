@@ -83,34 +83,35 @@ void prey_next_position(
 void move_preys(
 	const subject_t *subjects, subject_t *next_subjects,
 	int g, int R, int C, int *N,
-	int GEN_PREY
+	int GEN_PROC
 ){
-	clock_t time = clock();
+	// clock_t time = clock();
 
-	int n_ = 0;
 	const int fix_N = *N;
 
-	for (int id = 0; n_ < fix_N; id++){
-
-		if (subjects[id].type != NONE)
-			n_++;
+	for (int id = 0; id < fix_N; id++){
 
 		if (subjects[id].type == PREY){
 
 			subject_t *subject = &next_subjects[id];
 
+			printf("PREY (%d,%d): ", subject->x, subject->y);
+
 			prey_next_position(subject, subjects, g, R, C, fix_N);
+			printf("move, ");
 
 			if (subject->prey.gen_proc-- == 0){
-				subject_t new = new_prey(subjects[id].x, subjects[id].y, GEN_PREY);
+				printf("proc");
+				subject_t new = new_prey(subjects[id].x, subjects[id].y, GEN_PROC);
 				next_subjects[(*N)++] = new;
-				subject->prey.gen_proc = GEN_PREY;
+				subject->prey.gen_proc = GEN_PROC;
 			}
+			printf("\n");
 		}
 	}
 
-	time = clock() - time;
-	printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
+	// time = clock() - time;
+	// printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
 }
 
 /* _____PREDATORS_____ */
@@ -167,54 +168,83 @@ void predator_next_position(
 void move_predators(
 	const subject_t *subjects, subject_t *next_subjects,
 	int g, int R, int C, int *N,
-	int GEN_PREDATOR, int GEN_FOOD
+	int GEN_PROC, int GEN_FOOD
 ){
-	clock_t time = clock();
+	// clock_t time = clock();
 
-	int n_ = 0;
 	const int fix_N = *N;
+	int end_list = fix_N;
 
-	for (int id = 0; n_ < fix_N; id++){
-
-		if (subjects[id].type != NONE)
-			n_++;
+	for (int id = 0; id < fix_N; id++){
 
 		if (subjects[id].type == PREDATOR){
 
 			subject_t *subject = &next_subjects[id];
 
+			printf("PREDATOR (%d,%d): ", subject->x, subject->y);
+
+			int alive = 1;
 			if (attack_prey(subject, subjects, g, R, C, fix_N)){
 				subject->predator.gen_food = GEN_FOOD;
+				printf("attack, ");
 			}
 			else {
 				if (--subject->predator.gen_food == 0){
 					subject->type = NONE;
 					(*N)--;
+					alive = 0;
+					printf("die, ");
 				}
 				else{
 					predator_next_position(subject, subjects, g, R, C, fix_N);
-
-					if (subject->predator.gen_proc-- == 0){
-						subject_t new = new_predator(subjects[id].x, subjects[id].y, GEN_PREDATOR, GEN_FOOD);
-						next_subjects[(*N)++] = new;
-						subject->prey.gen_proc = GEN_PREDATOR;
-					}
+					printf("move, ");
 				}
 			}
+			if (alive && subject->predator.gen_proc-- == 0) {
+				subject_t new = new_predator(subjects[id].x, subjects[id].y, GEN_PROC, GEN_FOOD);
+				next_subjects[end_list++] = new;
+				(*N)++;
+				subject->predator.gen_proc = GEN_PROC;
+				printf("proc ");
+			}
+			printf("\n");
 		}
 	}
-
-	time = clock() - time;
-	printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
+	// time = clock() - time;
+	// printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
 }
 
+
+
+
 /* _____CONFLICT_____ */
+void solve(subject_t *s1, subject_t *s2){
+
+
+
+}
+
+
 void solve_conflicts(
-	const subject_t *subjects,
-	subject_t *next_subjects,
+	subject_t *subjects,
 	int *N
 ){
 
-	// TODO
+	const int fix_N = *N;
 
+	for (int i = 0; i < fix_N; i++){
+
+		subject_t *sub1 = NULL;
+		if (subjects[i].type == PREDATOR || subjects[i].type == PREY)
+			sub1 = &subjects[i];
+
+		for (int j = i+1l; j < fix_N; j++){
+
+			subject_t *sub2 = NULL;
+			if (subjects[j].type == PREDATOR || subjects[j].type == PREY)
+				sub2 = &subjects[j];
+
+			if (sub1 && sub2) solve(sub1, sub2);
+		}
+	}
 }

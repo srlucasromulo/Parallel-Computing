@@ -15,9 +15,10 @@ void empty_subjects_list(subject_t *list, int size){
 
 void print_subjects_list(const subject_t *list, int N){
 
-	int count_N = 0;
+	int n_ = 0;
 
-	for (int i = 0; count_N < N; i++){
+	// for (int i = 0; n_ < N; i++){
+	for (int i = 0; i < 5*5; i++){
 		if (list[i].type != NONE){
 			if (list[i].type == PREDATOR)
 				printf("%s ", PREDATOR_ALIAS);			
@@ -26,29 +27,36 @@ void print_subjects_list(const subject_t *list, int N){
 			if (list[i].type == OBSTACLE)
 				printf("%s ", OBSTACLE_ALIAS);
 		printf("%d %d\n", list[i].x, list[i].y);
-		count_N++;
+		n_++;
+		}
+		else {
+			printf("NONE\n");
 		}
 	}
 }
 
-void copy_subjects_list(subject_t *dest, const subject_t *src, int size){
-	clock_t time = clock();
+void copy_subjects_list(subject_t *dest, const subject_t *src, int N){
+	// clock_t time = clock();
 
-	for (int i = 0; i < size; i++)
-		dest[i] = src[i];
+	int n_ = 0;
+	for (int i = 0; n_ < N; i++){
+		dest[i].type = NONE;
+		if (src[i].type != NONE)
+			dest[n_++] = src[i];
+	}
 
-	time = clock() - time;
-	printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
+	// time = clock() - time;
+	// printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
 }
 
-int open_list_position(subject_t *list);
+int empty_list_position(subject_t *list);
 void add_subject_to_list(subject_t *list, subject_t item){
 
-	int p = open_list_position(list);
+	int p = empty_list_position(list);
 	list[p] = item;
 }
 
-int open_list_position(subject_t *list){
+int empty_list_position(subject_t *list){
 	clock_t time = clock();
 
 	int id;

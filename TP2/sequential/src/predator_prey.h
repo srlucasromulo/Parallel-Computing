@@ -65,8 +65,7 @@ void move_predators(
 	int GEN_PREDATOR, int GEN_FOOD
 );
 void solve_conflicts(
-	const subject_t *subjects,
-	subject_t *next_subjects,
+	subject_t *subjects,
 	int *N
 );
 
