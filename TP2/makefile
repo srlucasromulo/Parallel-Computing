@@ -59,7 +59,7 @@ run: all
 	@ export OMP_NUM_THREADS=$(NUM_THREADS); $(BIN) > ./time/time_elapsed
 
 gprof: run
-	@ gprof -b $(BIN) gmon.out > profile
+	@ gprof -bp $(BIN) gmon.out > profile
 
 profile: run
 	@ cd time && python script.py
