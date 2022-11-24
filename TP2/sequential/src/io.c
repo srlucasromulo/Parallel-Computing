@@ -87,7 +87,6 @@ void load_ecosystem_disposition(
 }
 
 void save_output(
-	int *current_board, 
 	subject_t *subjects,
 	int *specs
 ){
@@ -101,20 +100,19 @@ void save_output(
 	}
 	strcat(buffer, "\n");
 
-	for (int i = 0; i < specs[R]; i++){
-		for (int j = 0; j < specs[C]; j++){
-			int id = current_board[i*C+j];
-			if (id != -1){
-				if (current_board[i*C+j] == -2)
-					strcat(buffer, "ROCHA ");
-				if (subjects[id].type == PREY)
-					strcat(buffer, "COELHO ");
-				if (subjects[id].type == PREDATOR)
-					strcat(buffer, "RAPOSA ");
-				char position[11] = "\0";
-				sprintf(position, "%d %d\n", i, j);
-				strcat(buffer, position);
-			}
+	int n_ = 0;
+	for (int i = 0; n_ < specs[N]; i++){
+		if (subjects[i].type != NONE){
+			if (subjects[i].type == OBSTACLE)
+				strcat(buffer, "ROCHA ");
+			if (subjects[i].type == PREY)
+				strcat(buffer, "COELHO ");
+			if (subjects[i].type == PREDATOR)
+				strcat(buffer, "RAPOSA ");
+			char position[11] = "\0";
+			sprintf(position, "%d %d\n", subjects[i].x, subjects[i].y);
+			strcat(buffer, position);
+			n_++;		
 		}
 	}
 

@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <omp.h>
 
 
 #define PREDATOR 'R'	// types for subject list
@@ -42,20 +43,23 @@ typedef struct subject_t {
 	};
 } subject_t;
 
+/* _____BOARD_____ */
+void print_board(const subject_t *list, int R, int C);
 
 /* _____LIST_____ */
 void empty_subjects_list(subject_t *list, int size);
-void print_subjects_list(const subject_t *list, int N);
-void copy_subjects_list(subject_t *dest, const subject_t *src, int N);
+void print_subjects_list(const subject_t *list, int size);
+void copy_subjects_list(subject_t *dest, const subject_t *src, int size);
+void new_subjects_list(subject_t *dest, const subject_t *src, int size);
 void add_subject_to_list(subject_t *list, subject_t item);
 subject_t new_obstacle(int x, int y);
 subject_t new_prey(int x, int y, int GEN_PROC);
 subject_t new_predator(int x, int y, int GEN_PROC, int GEN_FOOD);
-char subject_in_position(const subject_t *list, int N, int x, int y);
+char subject_in_position(const subject_t *list, int size, int x, int y);
 
 /* _____MOVEMENT_____ */
 void move_preys(
-	const subject_t *subjects, subject_t *next_subjects,
+	subject_t *subjects, subject_t *next_subjects,
 	int g, int R, int C, int *N,
 	int GEN_PREY
 );
@@ -66,7 +70,7 @@ void move_predators(
 );
 void solve_conflicts(
 	subject_t *subjects,
-	int *N
+	int size, int *N
 );
 
 

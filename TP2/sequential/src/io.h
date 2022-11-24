@@ -14,7 +14,6 @@ void load_ecosystem_disposition(
 	subject_t *subjects
 );
 void save_output(
-	int *current_board, 
 	subject_t *subjects,
 	int *specs
 );

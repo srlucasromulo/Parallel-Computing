@@ -30,9 +30,8 @@ int main (int argc, char **argv){
 
 	for (int g = 0; g < specs[N_GEN]; g++){
 
-		// copy current subjects list to a new one
 		subject_t next_subjects[specs[R]*specs[C]];
-		copy_subjects_list((subject_t*)&next_subjects, subjects, specs[N]);
+		copy_subjects_list(next_subjects, subjects, specs[R]*specs[C]);
 
 		move_preys(
 			subjects, (subject_t*)&next_subjects,
@@ -40,7 +39,7 @@ int main (int argc, char **argv){
 			specs[GEN_PROC_PREY]
 		);
 
-		copy_subjects_list((subject_t*)&subjects, next_subjects, specs[N]);
+		copy_subjects_list(subjects, next_subjects, specs[R]*specs[C]);
 
 		move_predators(
 			subjects, (subject_t*)&next_subjects,
@@ -48,37 +47,9 @@ int main (int argc, char **argv){
 			specs[GEN_PROC_PREY], specs[GEN_PREDATOR_FOOD]
 		);
 
-		copy_subjects_list((subject_t*)&subjects, next_subjects, specs[N]);
+		solve_conflicts((subject_t*)&next_subjects, specs[R]*specs[C], &specs[N]);
 
-		solve_conflicts((subject_t*)&subjects, &specs[N]);
-
-		// DBG - print board
-		char board[specs[R]][specs[C]];
-		for (int i = 0; i < specs[R]; i++)
-			for (int j = 0; j < specs[C]; j++)
-				board[i][j] = NONE;
-
-		int n_ = 0;
-		for (int i = 0; n_ < specs[N]; i++){
-			if (subjects[i].type != NONE){
-				board[subjects[i].x][subjects[i].y] = subjects[i].type;
-				n_++;
-			}
-		}
-
-		printf("GEN %d\n", g+1);
-		printf("-------\n");
-		for (int i = 0; i < specs[R]; i++){
-			printf("|");
-			for (int j = 0; j < specs[C]; j++){
-				printf("%c", board[i][j]);
-			}
-			printf("|\n");
-		}
-		printf("-------\n");
-
-
+		copy_subjects_list(subjects, next_subjects, specs[R]*specs[C]);
 	}
-
-	// save_output((int*)current_board, subjects, specs);
+	save_output(subjects, specs);
 }

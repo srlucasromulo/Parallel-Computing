@@ -2,23 +2,44 @@
 #include <stdio.h>
 
 
+/* _____BOARD_____ */
+void print_board(const subject_t *list, int R, int C){
+
+	char board[R][C];
+	for (int i = 0; i < R; i++)
+		for (int j = 0; j < C; j++)
+			board[i][j] = NONE;
+
+	for (int i = 0; i < R*C; i++)
+		if (list[i].type != NONE)
+			board[list[i].x][list[i].y] = list[i].type;
+
+	for (int i = 0; i < C+2; i++) printf("-");
+	printf("\n");
+
+	for (int i = 0; i < R; i++){
+		printf("|");
+		for (int j = 0; j < C; j++){
+			printf("%c", board[i][j]);
+		}
+		printf("|\n");
+	}
+
+	for (int i = 0; i < C+2; i++) printf("-");
+	printf("\n");
+}
+
+
 /* _____LIST_____ */
 void empty_subjects_list(subject_t *list, int size){
-	clock_t time = clock();
 
 	for (int i = 0; i < size; i++)
 		list[i].type = '-';
-
-	time = clock() - time;
-	printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
 }
 
-void print_subjects_list(const subject_t *list, int N){
+void print_subjects_list(const subject_t *list, int size){
 
-	int n_ = 0;
-
-	// for (int i = 0; n_ < N; i++){
-	for (int i = 0; i < 5*5; i++){
+	for (int i = 0; i < size; i++)
 		if (list[i].type != NONE){
 			if (list[i].type == PREDATOR)
 				printf("%s ", PREDATOR_ALIAS);			
@@ -26,27 +47,22 @@ void print_subjects_list(const subject_t *list, int N){
 				printf("%s ", PREY_ALIAS);	
 			if (list[i].type == OBSTACLE)
 				printf("%s ", OBSTACLE_ALIAS);
-		printf("%d %d\n", list[i].x, list[i].y);
-		n_++;
+			printf("%d %d\n", list[i].x, list[i].y);
 		}
-		else {
-			printf("NONE\n");
-		}
-	}
 }
 
-void copy_subjects_list(subject_t *dest, const subject_t *src, int N){
-	// clock_t time = clock();
+void copy_subjects_list(subject_t *dest, const subject_t *src, int size){
 
-	int n_ = 0;
-	for (int i = 0; n_ < N; i++){
-		dest[i].type = NONE;
-		if (src[i].type != NONE)
-			dest[n_++] = src[i];
-	}
+	for (int i = 0; i < size; i++)
+		dest[i] = src[i];
+}
 
-	// time = clock() - time;
-	// printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
+void new_subjects_list(subject_t *dest, const subject_t *src, int size){
+
+	empty_subjects_list(dest, size);
+	for (int i = 0; i < size; i++)
+		if (src[i].type == OBSTACLE)
+			add_subject_to_list(dest, src[i]);
 }
 
 int empty_list_position(subject_t *list);
@@ -57,14 +73,10 @@ void add_subject_to_list(subject_t *list, subject_t item){
 }
 
 int empty_list_position(subject_t *list){
-	clock_t time = clock();
 
 	int id;
 	for (id = 0; list[id].type != NONE; id++);
 
-	time = clock() - time;
-	printf("%s;%lf\n", __FUNCTION__, (double)time/CLOCKS_PER_SEC);
-	
 	return id;
 }
 
@@ -104,16 +116,11 @@ subject_t new_predator(int x, int y, int GEN_PROC, int GEN_FOOD){
 	return new;
 }
 
-char subject_in_position(const subject_t *list, int N, int x, int y) {
+char subject_in_position(const subject_t *list, int size, int x, int y) {
 
-	int count_N = 0;
-	for (int i = 0; count_N < N; i++){
-		if (list[i].type != NONE){
+	for (int i = 0; i < size; i++)
+		if (list[i].type != NONE)
 			if (list[i].x == x && list[i].y == y)
 				return list[i].type;
-			else
-				count_N++;
-		}
-	}
 	return NONE;
 }

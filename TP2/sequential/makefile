@@ -26,7 +26,7 @@ MPI_CC = mpicc
 CC = $(C_CC)
 
 # Compiler flags
-CFLAGS = -lm -Wall -pg
+CFLAGS = -lm -Wall -pg -fopenmp
 CCFLAGS = $(CFLAGS)
 
 
