@@ -92,6 +92,7 @@ void move_preys(
 
 	int N_tmp = *N;
 
+	#pragma omp parallel for schedule(dynamic) shared(N_tmp)
 	for (int id = 0; id < R*C; id++){
 
 		// for each prey
@@ -177,6 +178,7 @@ void move_predators(
 
 	int N_tmp = *N;
 
+	#pragma omp parallel for schedule(dynamic) shared(N_tmp)
 	for (int id = 0; id < R*C; id++){
 
 		// for each predator
@@ -197,9 +199,8 @@ void move_predators(
 					alive = 0;
 				}
 				// move
-				else{
+				else
 					predator_next_position(subject, subjects, g, R, C);
-				}
 			}
 			// try procreation
 			if (alive && subject->predator.gen_proc-- == 0) {
@@ -258,6 +259,7 @@ void solve_conflicts(
 
 	int N_tmp = *N;
 
+	#pragma omp parallel for schedule(dynamic) shared(N_tmp)
 	for (int i = 0; i < size; i++){
 		for (int j = i+1; j < size; j++){
 
@@ -274,21 +276,24 @@ void solve_conflicts(
 			int survivor = 0;
 			// check sub1 & sub2 exist and are in the same position
 			if (sub1 && sub2 && sub1->x == sub2->x && sub1->y == sub2->y) {
-				if (sub1 && sub2 && sub1->x == sub2->x && sub1->y == sub2->y) 
-					// solve and get the survivor
-					survivor = solve(sub1, sub2);
+				#pragma omp critical
+				{
+					if (sub1 && sub2 && sub1->x == sub2->x && sub1->y == sub2->y) 
+						// solve and get the survivor
+						survivor = solve(sub1, sub2);
 
-				// erase the non-survivor from the list and decrease N
-				if (survivor){
-					if (survivor == 1){
-						sub2->type = NONE;
-						sub2 = NULL;
+					// erase the non-survivor from the list and decrease N
+					if (survivor){
+						if (survivor == 1){
+							sub2->type = NONE;
+							sub2 = NULL;
+						}
+						else{
+							sub1->type = NONE;
+							sub1 = NULL;
+						}
+						N_tmp--;
 					}
-					else{
-						sub1->type = NONE;
-						sub1 = NULL;
-					}
-					N_tmp--;
 				}
 			}
 		}
